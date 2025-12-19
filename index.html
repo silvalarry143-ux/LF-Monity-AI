@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LF Monity AI</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4a90e2">
+<meta name="author" content="Larry Flávio Silva Oliveira">
+<meta name="creator" content="Larry Flávio Silva Oliveira">
+<meta name="copyright" content="© Larry Flávio Silva Oliveira">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root{
+--azul:#4a90e2;--verde:#44bd32;--vermelho:#ff5c5c;--escuro:#1e272e;--card:#ffffffcc}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#eef5ff,#f5f6fa)}
+body.dark{background:linear-gradient(135deg,#1e272e,#2f3640);color:#f5f6fa}
+header{text-align:center;padding:24px;color:#fff;background:linear-gradient(90deg,var(--azul),#6fa8ff)}
+main{max-width:1200px;margin:auto;padding:20px}
+.card,.box{background:var(--card);padding:20px;border-radius:22px;box-shadow:0 8px 20px rgba(0,0,0,.15)}
+.dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.grid{display:grid;grid-template-columns:1.5fr .7fr;gap:25px;margin-top:30px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.form{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 1fr;gap:10px}
+@media(max-width:900px){.form{grid-template-columns:1fr}}
+input,select,button{padding:12px;border-radius:12px;border:none}
+button{background:linear-gradient(90deg,var(--azul),#6fa8ff);color:#fff;font-weight:bold}
+.progress{background:#ddd;border-radius:14px;height:22px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;color:#fff;display:flex;align-items:center;justify-content:center}
+footer{text-align:center;font-size:12px;opacity:.7;margin:20px}
+.toggle{position:fixed;bottom:20px;right:20px;width:52px;height:52px;border-radius:50%;background:#111;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+</style>
+</head>
+<body>
+<header>
+<h1>LF Monity AI</h1>
+<small>Smart Finance Control</small>
+</header>
+
+<main>
+<div class="dashboard">
+<div class="card"><h4>Entrada</h4><p id="entrada">R$ 0,00</p></div>
+<div class="card"><h4>Saída</h4><p id="saida">R$ 0,00</p></div>
+<div class="card"><h4>Invest.</h4><p id="invest">R$ 0,00</p></div>
+<div class="card"><h4>Saldo</h4><p id="saldo">R$ 0,00</p></div>
+</div>
+
+<div class="grid">
+<div class="box">
+<h3>Lançamentos</h3>
+<div class="form">
+<input id="desc" placeholder="Descrição">
+<input id="valor" type="number" step="0.01" placeholder="Valor">
+<select id="tipo"><option>entrada</option><option>saida</option><option>investimento</option></select>
+<input id="mes" type="month">
+<button onclick="add()">Adicionar</button>
+</div>
+<table id="tabela"></table>
+</div>
+
+<div class="box">
+<h3>IA Financeira</h3>
+<select id="filtro" onchange="render()"></select>
+<div class="progress"><div id="barra">0%</div></div>
+<canvas id="grafico"></canvas>
+<div id="insights"></div>
+</div>
+</div>
+</main>
+
+<footer>
+LF Monity AI © <span id="ano"></span><br>Desenvolvido por Larry Flávio
+</footer>
+
+<div class="toggle" onclick="toggleTema()">🌓</div>
+
+<script>
+const f=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let dados=JSON.parse(localStorage.getItem('lfmonity'))||[];
+
+function add(){
+dados.push({d:desc.value,v:+valor.value,t:tipo.value,m:mes.value});
+localStorage.setItem('lfmonity',JSON.stringify(dados));render();}
+
+function render(){
+let e=0,s=0,i=0;
+dados.forEach(x=>{if(x.t==='entrada')e+=x.v;if(x.t==='saida')s+=x.v;if(x.t==='investimento')i+=x.v});
+entrada.textContent=f(e);saida.textContent=f(s);invest.textContent=f(i);saldo.textContent=f(e-s-i);
+insights.innerHTML=`💡 Você gastou ${f(s)} este mês. ${s>e?'⚠️ Atenção aos gastos':'✅ Bom controle!'}`;
+}
+
+function toggleTema(){document.body.classList.toggle('dark');}
+document.getElementById('ano').textContent=new Date().getFullYear();
+render();
+</script>
+
+<script>
+if('serviceWorker'in navigator){navigator.serviceWorker.register('service-worker.js')}
+</script>
+</body>
+</html>
