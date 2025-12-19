@@ -1,12 +1,13 @@
 {
   "name": "LF Monity AI",
-  "short_name": "Monity",
-  "description": "Aplicativo de controle financeiro inteligente com suporte offline, metas e gráficos claros.",
-  "start_url": "/LF-Monity-AI/index.html",
+  "short_name": "LF Monity",
+  "description": "Controle financeiro inteligente com IA. Gerencie entradas, saídas, investimentos e metas mensais.",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#4a90e2",
   "theme_color": "#4a90e2",
   "orientation": "portrait",
+  "scope": "./",
   "icons": [
     {
       "src": "icon-192.png",
